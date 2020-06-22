@@ -201,7 +201,7 @@ static const unsigned char *parse_number(cJSON * const item, const unsigned char
 
     /* copy the number into a temporary buffer and replace '.' with the decimal point
      * of the current locale (for strtod) */
-    for (i = 0; (i < (sizeof(number_c_string) - 1)) && (input[i] != '\0'); i++)
+    for (i = 0; (i < (sizeof(number_c_string) - 1)) && (input[i] != '\0'); ++i)
     {
         switch (input[i])
         {
@@ -238,6 +238,8 @@ loop_end:
     {
         return NULL; /* parse_error */
     }
+
+    // cJSON_SetNumberHelper(item, number);
 
     item->valuedouble = number;
 
@@ -418,7 +420,7 @@ static cJSON_bool print_number(const cJSON * const item, printbuffer * const out
     }
 
     /* This checks for NaN and Infinity */
-    if ((d * 0) != 0)
+    if ((d * 0) != 0) // get new knowledge haha!
     {
         length = sprintf((char*)number_buffer, "null");
     }
@@ -1642,7 +1644,7 @@ CJSON_PUBLIC(void) cJSON_AddItemToObject(cJSON *object, const char *string, cJSO
     /* call cJSON_AddItemToObjectCS for code reuse */
     cJSON_AddItemToObjectCS(object, (char*)cJSON_strdup((const unsigned char*)string, &global_hooks), item);
     /* remove cJSON_StringIsConst flag */
-    item->type &= ~cJSON_StringIsConst;
+    item->type &= ~cJSON_StringIsConst; // del cJSON_StringIsConst ?
 }
 
 #if defined (__clang__) || ((__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
@@ -1661,7 +1663,7 @@ CJSON_PUBLIC(void) cJSON_AddItemToObjectCS(cJSON *object, const char *string, cJ
         global_hooks.deallocate(item->string);
     }
     item->string = (char*)string;
-    item->type |= cJSON_StringIsConst;
+    item->type |= cJSON_StringIsConst;  // add cJSON_StringIsConst ?
     cJSON_AddItemToArray(object, item);
 }
 #if defined (__clang__) || ((__GNUC__)  && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 5))))
